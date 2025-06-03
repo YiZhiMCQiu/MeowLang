@@ -14,8 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.glavo.meow;
+package org.glavo.meow.ast;
 
-@FunctionalInterface
-public non-sealed interface MeowMacro extends MeowValue  {
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.glavo.meow.MeowContext;
+import org.glavo.meow.value.MeowText;
+import org.glavo.meow.value.MeowValue;
+
+import java.util.List;
+
+public record MeowRichText(List<XWPFRun> content) implements MeowExpression {
+    @Override
+    public MeowValue eval(MeowContext context) {
+        return new MeowText(content);
+    }
 }

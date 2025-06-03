@@ -14,16 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.glavo.meow;
-
-import java.util.List;
+package org.glavo.meow.value;
 
 @FunctionalInterface
-public non-sealed interface MeowFunction extends MeowValue {
-    MeowValue applyValues(MeowContext context, List<MeowValue> args);
-
-    @Override
-    default MeowValue apply(MeowContext context, List<MeowExpression> args) {
-        return applyValues(context, args.stream().map(arg -> arg.eval(context)).toList());
-    }
+public non-sealed interface MeowMacro extends MeowValue  {
 }

@@ -14,15 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.glavo.meow;
+package org.glavo.meow.value;
 
-import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.glavo.meow.MeowContext;
+import org.glavo.meow.ast.MeowExpression;
 
 import java.util.List;
 
-public record MeowText(List<XWPFRun> content) implements MeowValue {
+public final class MeowUnit implements MeowValue {
+
+    public static final MeowUnit UNIT = new MeowUnit();
+
+    MeowUnit() {
+    }
+
     @Override
     public MeowValue apply(MeowContext context, List<MeowExpression> args) {
-        return this; // ???
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "()";
     }
 }

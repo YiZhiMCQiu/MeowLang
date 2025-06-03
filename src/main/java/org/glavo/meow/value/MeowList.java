@@ -14,25 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.glavo.meow;
+package org.glavo.meow.value;
 
-import java.text.MessageFormat;
+import org.glavo.meow.MeowContext;
+import org.glavo.meow.ast.MeowExpression;
 
-/**
- *
- */
-public final class MeowDebug {
-    private static final boolean DEBUG = "true".equals(System.getProperty("meow.debug"));
+import java.util.List;
 
-    public static void debugLog(String message) {
-        if (DEBUG) {
-            System.out.println(message);
-        }
-    }
-
-    public static void debugLog(String pattern, Object... args) {
-        if (DEBUG) {
-            System.out.println(MessageFormat.format(pattern, args));
-        }
+public record MeowList(List<MeowValue> values) implements MeowValue {
+    @Override
+    public MeowValue apply(MeowContext context, List<MeowExpression> args) {
+        return this; // TODO: ???
     }
 }

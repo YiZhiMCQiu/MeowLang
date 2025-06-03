@@ -18,6 +18,7 @@ package org.glavo.meow;
 
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHighlightColor;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -27,6 +28,10 @@ public final class Meow {
     private static final Set<String> MEOW = Set.of("meow", "miaou", "miao", "nyan", "にゃん", "야옹", "喵");
 
     public static Meow of(XWPFRun term) {
+        if (term == null) {
+            return null;
+        }
+
         if (!term.getEmbeddedPictures().isEmpty()) {
             return null;
         }
@@ -38,9 +43,22 @@ public final class Meow {
         }
     }
 
+    public static Meow builtin(int color) {
+        return new Meow(
+                false,
+                UnderlinePatterns.NONE,
+                color,
+                STHighlightColor.LIGHT_GRAY,
+                false,
+                null,
+                null
+        );
+    }
+
     private final boolean isBracket;
     private final UnderlinePatterns underline;
     private final int color;
+    private final STHighlightColor.Enum highlightColor;
     private final boolean isBold;
     private final String font;
     private final Double fontSize;
@@ -48,20 +66,23 @@ public final class Meow {
     public Meow(XWPFRun term) {
         this.isBracket = term.isItalic();
         this.color = term.getColor() == null ? 0 : Integer.parseInt(term.getColor(), 16);
+        this.highlightColor = term.getTextHighlightColor();
         this.isBold = term.isBold();
         this.underline = term.getUnderline();
         this.font = term.getFontFamily();
         this.fontSize = term.getFontSizeAsDouble();
     }
 
-    public Meow(int color, boolean isBold) {
-        this.isBracket = false;
-        this.underline = UnderlinePatterns.NONE;
+    public Meow(boolean isBracket, UnderlinePatterns underline, int color, STHighlightColor.Enum highlightColor, boolean isBold, String font, Double fontSize) {
+        this.isBracket = isBracket;
+        this.underline = underline;
         this.color = color;
+        this.highlightColor = highlightColor;
         this.isBold = isBold;
-        this.font = null;
-        this.fontSize = null;
+        this.font = font;
+        this.fontSize = fontSize;
     }
+
 
     public boolean isBracket() {
         return isBracket;
@@ -75,6 +96,10 @@ public final class Meow {
         return color;
     }
 
+    public STHighlightColor.Enum getHighlightColor() {
+        return highlightColor;
+    }
+
     public String getFont() {
         return font;
     }
@@ -85,7 +110,7 @@ public final class Meow {
 
     @Override
     public int hashCode() {
-        return Objects.hash(isBracket, color, isBold, underline, font, fontSize);
+        return Objects.hash(isBracket, color, isBold, highlightColor, underline, font, fontSize);
     }
 
     @Override
@@ -93,6 +118,7 @@ public final class Meow {
         return obj instanceof Meow that
                && this.isBracket == that.isBracket
                && this.color == that.color
+               && this.highlightColor == that.highlightColor
                && this.isBold == that.isBold
                && this.underline == that.underline
                && Objects.equals(this.font, that.font)
@@ -101,7 +127,7 @@ public final class Meow {
 
     @Override
     public String toString() {
-        return "Meow[isBracket=%s, color=%06X, isBold=%s, underline=%s, font=%s, fontSize=%s]"
-                .formatted(isBracket, color, isBold, underline, font, fontSize);
+        return "Meow[isBracket=%s, color=%06X, highlightColor=%s, isBold=%s, underline=%s, font=%s, fontSize=%s]"
+                .formatted(isBracket, color, highlightColor, isBold, underline, font, fontSize);
     }
 }

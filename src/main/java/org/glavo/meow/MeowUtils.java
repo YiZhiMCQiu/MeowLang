@@ -16,7 +16,9 @@
  */
 package org.glavo.meow;
 
+import kala.ansi.AnsiString;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHighlightColor;
 
 import java.util.List;
 
@@ -34,6 +36,46 @@ public final class MeowUtils {
             end++;
         }
         return end;
+    }
+
+
+    public static void appendTrueRgbEscape(StringBuilder builder, boolean background, int color) {
+        builder.append("\u001b[")
+                .append(background ? "48" : "38")
+                .append(";2;")
+                .append((color >> 16) & 0xFF)
+                .append(';')
+                .append((color >> 8) & 0xFF)
+                .append(';')
+                .append(color & 0xFF)
+                .append('m');
+    }
+
+    public static AnsiString.Attribute attributeOf(STHighlightColor.Enum color) {
+        if (color == STHighlightColor.BLACK) {
+            return AnsiString.Back.Black;
+        } else if (color == STHighlightColor.BLUE) {
+            return AnsiString.Back.Blue;
+        } else if (color == STHighlightColor.CYAN) {
+            return AnsiString.Back.Cyan;
+        } else if (color == STHighlightColor.GREEN) {
+            return AnsiString.Back.Green;
+        } else if (color == STHighlightColor.MAGENTA) {
+            return AnsiString.Back.Magenta;
+        } else if (color == STHighlightColor.RED) {
+            return AnsiString.Back.Red;
+        } else if (color == STHighlightColor.YELLOW) {
+            return AnsiString.Back.Yellow;
+        } else if (color == STHighlightColor.WHITE) {
+            return AnsiString.Back.White;
+        } else if (color == STHighlightColor.LIGHT_GRAY) {
+            return AnsiString.Back.LightGray;
+        } else if (color == STHighlightColor.DARK_GRAY) {
+            return AnsiString.Back.DarkGray;
+        } else {
+            // TODO: Dark colors
+            return null;
+        }
     }
 
     private MeowUtils() {
