@@ -18,7 +18,6 @@ package org.glavo.meow.ast;
 
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.glavo.meow.MeowContext;
-import org.glavo.meow.MeowSymbolMap;
 import org.glavo.meow.MeowUtils;
 import org.glavo.meow.value.MeowText;
 import org.glavo.meow.value.MeowValue;
@@ -32,7 +31,7 @@ public record MeowRichText(List<XWPFRun> content) implements MeowExpression {
     }
 
     @Override
-    public String toDebugString(MeowSymbolMap symbolMap) {
+    public String toDebugString() {
         return MeowUtils.toDebugString(content);
     }
 }

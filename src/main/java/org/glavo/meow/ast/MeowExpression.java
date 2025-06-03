@@ -17,12 +17,11 @@
 package org.glavo.meow.ast;
 
 import org.glavo.meow.MeowContext;
-import org.glavo.meow.MeowSymbolMap;
 import org.glavo.meow.value.MeowValue;
 
 public sealed interface MeowExpression permits MeowExpressionList, MeowRichText, MeowIdentifier {
 
     MeowValue eval(MeowContext context);
 
-    String toDebugString(MeowSymbolMap symbolMap);
+    String toDebugString();
 }

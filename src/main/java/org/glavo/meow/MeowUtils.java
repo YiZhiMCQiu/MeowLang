@@ -17,6 +17,8 @@
 package org.glavo.meow;
 
 import kala.ansi.AnsiString;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHighlightColor;
 
@@ -132,6 +134,14 @@ public final class MeowUtils {
 
         builder.append('"');
         return builder.toString();
+    }
+
+    public static XWPFRun toXWPFRun(String content) {
+        XWPFDocument doc = new XWPFDocument();
+        XWPFParagraph para = doc.createParagraph();
+        XWPFRun run = para.createRun();
+        run.setText(content);
+        return run;
     }
 
     private MeowUtils() {

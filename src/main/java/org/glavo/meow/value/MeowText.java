@@ -18,20 +18,34 @@ package org.glavo.meow.value;
 
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.glavo.meow.MeowContext;
-import org.glavo.meow.MeowSymbolMap;
 import org.glavo.meow.MeowUtils;
 import org.glavo.meow.ast.MeowExpression;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public record MeowText(List<XWPFRun> content) implements MeowValue {
+public record MeowText(List<XWPFRun> content) implements MeowFunction {
+
     @Override
-    public MeowValue apply(MeowContext context, List<MeowExpression> args) {
-        return this;
+    public String getName() {
+        return "text@" + Integer.toHexString(System.identityHashCode(this));
     }
 
     @Override
-    public String toDebugString(MeowContext context, MeowSymbolMap symbolMap) {
+    public MeowValue applyValues(MeowContext context, List<MeowValue> args) {
+        List<XWPFRun> results = new ArrayList<>(this.content);
+        for (MeowValue arg : args) {
+            if (arg instanceof MeowText(List<XWPFRun> argContent)) {
+                results.addAll(argContent);
+            } else {
+                results.add(MeowUtils.toXWPFRun(arg.toDisplayString(context)));
+            }
+        }
+        return new MeowText(results);
+    }
+
+    @Override
+    public String toDebugString(MeowContext context) {
         return MeowUtils.toDebugString(content);
     }
 

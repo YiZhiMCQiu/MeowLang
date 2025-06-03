@@ -19,21 +19,19 @@ package org.glavo.meow;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.glavo.meow.ast.MeowExpression;
-import org.glavo.meow.value.MeowFunction;
-import org.glavo.meow.value.MeowMacro;
+import org.glavo.meow.value.MeowBuiltinFunction;
+import org.glavo.meow.value.MeowBuiltinMacro;
 import org.glavo.meow.value.MeowUnit;
 import org.glavo.meow.value.MeowValue;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHighlightColor;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class MeowContext {
@@ -41,24 +39,12 @@ public final class MeowContext {
     public static final MeowContext ROOT = new MeowContext();
 
     static {
-        // Light Blue
-        registerBuiltinMacro(Meow.builtin(0x00B0F0, STHighlightColor.LIGHT_GRAY), "let", MeowBuiltinFunctions::let);
-
-        // Green
-        registerBuiltinMacro(Meow.builtin(0x00B050, STHighlightColor.LIGHT_GRAY), "lambda", MeowBuiltinFunctions::lambda);
-
-        // Red
-        registerBuiltinFunction(Meow.builtin(0xEE0000, STHighlightColor.LIGHT_GRAY), "print", MeowBuiltinFunctions::print);
-    }
-
-    private static void registerBuiltinMacro(Meow meow, String name, MeowMacro macro) {
-        MeowSymbolMap.INSTANCE.registerBuiltin(meow, name);
-        ROOT.setValue(meow, macro);
-    }
-
-    private static void registerBuiltinFunction(Meow meow, String name, MeowFunction function) {
-        MeowSymbolMap.INSTANCE.registerBuiltin(meow, name);
-        ROOT.setValue(meow, function);
+        for (var macro : MeowBuiltinMacro.values()) {
+            ROOT.setValue(macro.getMeow(), macro);
+        }
+        for (var function : MeowBuiltinFunction.values()) {
+            ROOT.setValue(function.getMeow(), function);
+        }
     }
 
     // ---------------
@@ -125,9 +111,9 @@ public final class MeowContext {
     public void evalDocument(XWPFDocument document) {
         for (XWPFParagraph paragraph : document.getParagraphs()) {
             MeowExpression expr = MeowParser.parse(paragraph.getRuns(), true);
-            log(">>> {0}", expr.toDebugString(MeowSymbolMap.INSTANCE));
+            log(">>> [{0}]", expr.toDebugString());
             MeowValue result = expr.eval(this);
-            log("|   >>> return({0}) in {1}", result.toDebugString(this, MeowSymbolMap.INSTANCE), this);
+            log("|   >>> return {0} in {1}", result.toDebugString(this), this);
         }
     }
 
@@ -137,24 +123,6 @@ public final class MeowContext {
     public void log(String pattern, Object... args) {
         if (Meow.DEBUG) {
             terminal.writer().println("[DEBUG] " + MessageFormat.format(pattern, args));
-        }
-    }
-
-    void logFunctionCall(String function, List<?> args) {
-        if (Meow.DEBUG) {
-            log("|   >>> {0}({2}) in {1}",
-                    function,
-                    this,
-                    args);
-        }
-    }
-
-    void logMacroCall(String macro, List<MeowExpression> args) {
-        if (Meow.DEBUG) {
-            log("|   >>> {0}({2}) in {1}",
-                    macro,
-                    this,
-                    MeowSymbolMap.INSTANCE.toString(args));
         }
     }
 

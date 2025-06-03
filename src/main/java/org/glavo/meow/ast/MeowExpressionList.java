@@ -22,7 +22,6 @@ import org.glavo.meow.value.MeowUnit;
 import org.glavo.meow.value.MeowValue;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public record MeowExpressionList(List<MeowExpression> nodes) implements MeowExpression {
     @Override
@@ -35,7 +34,7 @@ public record MeowExpressionList(List<MeowExpression> nodes) implements MeowExpr
     }
 
     @Override
-    public String toDebugString(MeowSymbolMap symbolMap) {
-        return symbolMap.toString(nodes);
+    public String toDebugString() {
+        return MeowSymbolMap.INSTANCE.toString(nodes);
     }
 }

@@ -27,7 +27,12 @@ import java.util.Set;
 public final class Meow {
     public static final boolean DEBUG = "true".equals(System.getProperty("meow.debug"));
 
-    private static final Set<String> MEOW = Set.of("meow", "miaou", "miao", "nyan", "にゃん", "야옹", "喵");
+    private static final Set<String> MEOW = Set.of(
+            "meow", "miaou", "miao", "nyan",
+            "にゃん", "야옹", "喵", "喵呜",
+            "мяу", "miyav", "miau", "miauw", "μιάου", "mjau", "nyávog", "म्याऊं", "meong", "mjá", "meo meo",
+            "mjäu", "mjav", "мјау", "mjal", "მიაუ", "myau", "ngiyavuma", "ማው", "maw"
+    );
 
     public static Meow of(XWPFRun term) {
         if (term == null) {
@@ -57,6 +62,7 @@ public final class Meow {
         );
     }
 
+    private final String rawName;
     private final boolean isBracket;
     private final UnderlinePatterns underline;
     private final int color;
@@ -66,6 +72,7 @@ public final class Meow {
     private final Double fontSize;
 
     public Meow(XWPFRun term) {
+        this.rawName = term.text();
         this.isBracket = term.isItalic();
         this.color = term.getColor() == null ? 0 : Integer.parseInt(term.getColor(), 16);
         this.highlightColor = term.getTextHighlightColor();
@@ -76,6 +83,7 @@ public final class Meow {
     }
 
     public Meow(boolean isBracket, UnderlinePatterns underline, int color, STHighlightColor.Enum highlightColor, boolean isBold, String font, Double fontSize) {
+        this.rawName = "";
         this.isBracket = isBracket;
         this.underline = underline;
         this.color = color;
@@ -129,7 +137,7 @@ public final class Meow {
 
     @Override
     public String toString() {
-        return "Meow[isBracket=%s, color=%06X, highlightColor=%s, isBold=%s, underline=%s, font=%s, fontSize=%s]"
-                .formatted(isBracket, color, highlightColor, isBold, underline, font, fontSize);
+        return "Meow[%s, isBracket=%s, color=%06X, highlightColor=%s, isBold=%s, underline=%s, font=%s, fontSize=%s]"
+                .formatted(rawName, isBracket, color, highlightColor, isBold, underline, font, fontSize);
     }
 }

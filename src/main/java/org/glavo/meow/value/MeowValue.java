@@ -17,16 +17,19 @@
 package org.glavo.meow.value;
 
 import org.glavo.meow.MeowContext;
-import org.glavo.meow.MeowSymbolMap;
 import org.glavo.meow.ast.MeowExpression;
 
 import java.util.List;
 
-public interface MeowValue {
+public sealed interface MeowValue permits MeowFunction, MeowMacro {
+
+    default String getName() {
+        return "value@" + Integer.toHexString(System.identityHashCode(this));
+    }
 
     MeowValue apply(MeowContext context, List<MeowExpression> args);
 
-    default String toDebugString(MeowContext context, MeowSymbolMap symbolMap) {
+    default String toDebugString(MeowContext context) {
         return toString();
     }
 

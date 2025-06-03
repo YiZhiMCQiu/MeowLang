@@ -21,7 +21,7 @@ import org.glavo.meow.ast.MeowExpression;
 
 import java.util.List;
 
-public final class MeowUnit implements MeowValue {
+public final class MeowUnit implements MeowFunction {
 
     public static final MeowUnit UNIT = new MeowUnit();
 
@@ -29,7 +29,12 @@ public final class MeowUnit implements MeowValue {
     }
 
     @Override
-    public MeowValue apply(MeowContext context, List<MeowExpression> args) {
+    public String getName() {
+        return "unit";
+    }
+
+    @Override
+    public MeowValue applyValues(MeowContext context, List<MeowValue> args) {
         return this;
     }
 

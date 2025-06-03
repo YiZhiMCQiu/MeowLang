@@ -16,6 +16,31 @@
  */
 package org.glavo.meow.value;
 
+import org.glavo.meow.Meow;
+import org.glavo.meow.MeowContext;
+import org.glavo.meow.MeowSymbolMap;
+import org.glavo.meow.ast.MeowExpression;
+
+import java.util.List;
+
 @FunctionalInterface
-public interface MeowMacro extends MeowValue {
+public non-sealed interface MeowMacro extends MeowValue {
+
+    default String getName() {
+        return "macro@" + Integer.toHexString(System.identityHashCode(this));
+    }
+
+    @Override
+    default MeowValue apply(MeowContext context, List<MeowExpression> args) {
+        String macro = getName();
+        if (Meow.DEBUG) {
+            context.log("|   >>> {0}{2} in {1}",
+                    macro,
+                    context,
+                    MeowSymbolMap.INSTANCE.toString(args));
+        }
+        return process(context, args);
+    }
+
+    MeowValue process(MeowContext context, List<MeowExpression> args);
 }

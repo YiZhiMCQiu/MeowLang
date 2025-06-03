@@ -17,14 +17,19 @@
 package org.glavo.meow.value;
 
 import org.glavo.meow.MeowContext;
-import org.glavo.meow.ast.MeowExpression;
 
 import java.util.List;
 
-public record MeowIntegerValue(long value) implements MeowValue {
+public record MeowIntegerValue(long value) implements MeowFunction {
+
     @Override
-    public MeowValue apply(MeowContext context, List<MeowExpression> args) {
-        return args.get((int) value).eval(context);
+    public String getName() {
+        return "integer@" + Integer.toHexString(System.identityHashCode(this));
+    }
+
+    @Override
+    public MeowValue applyValues(MeowContext context, List<MeowValue> args) {
+        return args.get((int) value);
     }
 
     @Override

@@ -29,7 +29,7 @@ public record MeowIdentifier(Meow meow) implements MeowExpression {
     }
 
     @Override
-    public String toDebugString(MeowSymbolMap symbolMap) {
-        return symbolMap.get(meow);
+    public String toDebugString() {
+        return MeowSymbolMap.INSTANCE.get(meow);
     }
 }

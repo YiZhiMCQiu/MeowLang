@@ -31,6 +31,12 @@ public record MeowLambda(
         List<Meow> parameters,
         List<MeowExpression> body
 ) implements MeowFunction {
+
+    @Override
+    public String getName() {
+        return "lambda@" + Integer.toHexString(System.identityHashCode(this));
+    }
+
     @Override
     public MeowValue applyValues(MeowContext ignored, List<MeowValue> lambdaArgs) {
         checkArgsCount(lambdaArgs, parameters.size());
@@ -48,15 +54,13 @@ public record MeowLambda(
     }
 
     @Override
-    public String toDebugString(MeowContext context, MeowSymbolMap symbolMap) {
+    public String toDebugString(MeowContext context) {
         StringBuilder builder = new StringBuilder();
-
-        builder.append("lambda[context=").append(context.toString()).append(", parameters=[");
-        builder.append(parameters.stream().map(symbolMap::get).collect(Collectors.joining(", ")));
+        builder.append(getName()).append("[context=").append(context.toString()).append(", parameters=[");
+        builder.append(parameters.stream().map(MeowSymbolMap.INSTANCE::get).collect(Collectors.joining(", ")));
         builder.append("], body=");
-        builder.append(symbolMap.toString(body));
+        builder.append(MeowSymbolMap.INSTANCE.toString(body));
         builder.append("]");
-
         return builder.toString();
     }
 }

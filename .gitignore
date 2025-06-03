@@ -7,6 +7,11 @@ build/
 *.tmp
 *.docx
 *.png
+*.jar
+
+/meow.jar
+/meow.sh
+/meow.bat
 
 ### IntelliJ IDEA ###
 .idea/

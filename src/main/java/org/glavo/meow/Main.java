@@ -27,13 +27,16 @@ public class Main {
         try (Terminal terminal = TerminalBuilder.builder()
                 .system(true)
                 .build()) {
-            for (String arg : args) {
-                new MeowContext(terminal).evalFile(Path.of(arg));
+            try {
+                for (String arg : args) {
+                    new MeowContext(terminal).evalFile(Path.of(arg));
+                }
+            } finally {
+                if (Meow.DEBUG) {
+                    terminal.writer().println(MeowSymbolMap.INSTANCE);
+                }
             }
 
-            if (Meow.DEBUG) {
-                terminal.writer().println(MeowSymbolMap.INSTANCE);
-            }
         }
     }
 }

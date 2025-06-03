@@ -40,20 +40,23 @@ tasks.test {
     useJUnitPlatform()
 }
 
-val meowSh by tasks.registering {
+val meow by tasks.registering {
     val headerFile = file("src/main/header/header.sh")
-    val outputFile = layout.buildDirectory.dir("libs").map { it.file("meow-$version.sh") }
+    val jarFile = file("meow.jar")
+    val shFile = file("meow.sh")
 
     dependsOn(tasks.shadowJar)
     inputs.file(headerFile)
     inputs.file(tasks.shadowJar.map { it.archiveFile })
-    outputs.file(outputFile)
+    outputs.files(jarFile, shFile)
 
     doLast {
-        outputFile.get().asFile.outputStream().use {
+        tasks.shadowJar.get().archiveFile.get().asFile.copyTo(jarFile, true)
+
+        shFile.outputStream().use {
             it.write(headerFile.readBytes())
             it.write(tasks.shadowJar.get().archiveFile.get().asFile.readBytes())
         }
-        outputFile.get().asFile.setExecutable(true)
+        shFile.setExecutable(true)
     }
 }

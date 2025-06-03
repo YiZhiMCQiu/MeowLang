@@ -16,17 +16,31 @@
  */
 package org.glavo.meow.value;
 
+import org.glavo.meow.Meow;
 import org.glavo.meow.MeowContext;
 import org.glavo.meow.ast.MeowExpression;
 
 import java.util.List;
 
 @FunctionalInterface
-public interface MeowFunction extends MeowValue {
-    MeowValue applyValues(MeowContext context, List<MeowValue> args);
+public non-sealed interface MeowFunction extends MeowValue {
+
+    default String getName() {
+        return "function@" + Integer.toHexString(System.identityHashCode(this));
+    }
 
     @Override
     default MeowValue apply(MeowContext context, List<MeowExpression> args) {
-        return applyValues(context, args.stream().map(arg -> arg.eval(context)).toList());
+        List<MeowValue> values = args.stream().map(arg -> arg.eval(context)).toList();
+
+        if (Meow.DEBUG) {
+            context.log("|   >>> {0}{2} in {1}",
+                    getName(),
+                    context,
+                    values.stream().map(it -> it.toDebugString(context)).toList());
+        }
+        return applyValues(context, values);
     }
+
+    MeowValue applyValues(MeowContext context, List<MeowValue> args);
 }
