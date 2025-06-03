@@ -1,0 +1,16 @@
+[versions]
+kala-ansi = "0.2.0"
+poi = "5.4.1"
+
+# plugins
+shadow = "8.3.6"
+
+[libraries]
+kala-ansi = { module = "org.glavo.kala:kala-ansi", version.ref = "kala-ansi" }
+kala-template = "org.glavo.kala:kala-template:0.2.0"
+poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
+jline = { module = "org.jline:jline", version = "3.30.0" }
+log4j-core = "org.apache.logging.log4j:log4j-core:2.24.3"
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
