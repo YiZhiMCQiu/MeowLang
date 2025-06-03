@@ -28,7 +28,11 @@ public class Main {
                 .system(true)
                 .build()) {
             for (String arg : args) {
-                new MeowContext(MeowContext.ROOT, terminal).evalFile(Path.of(arg));
+                new MeowContext(terminal).evalFile(Path.of(arg));
+            }
+
+            if (Meow.DEBUG) {
+                terminal.writer().println(MeowSymbolMap.INSTANCE);
             }
         }
     }

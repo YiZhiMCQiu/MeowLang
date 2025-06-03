@@ -18,6 +18,7 @@ package org.glavo.meow.ast;
 
 import org.glavo.meow.Meow;
 import org.glavo.meow.MeowContext;
+import org.glavo.meow.MeowSymbolMap;
 import org.glavo.meow.value.MeowValue;
 
 public record MeowIdentifier(Meow meow) implements MeowExpression {
@@ -25,5 +26,10 @@ public record MeowIdentifier(Meow meow) implements MeowExpression {
     @Override
     public MeowValue eval(MeowContext context) {
         return context.getValue(meow);
+    }
+
+    @Override
+    public String toDebugString(MeowSymbolMap symbolMap) {
+        return symbolMap.get(meow);
     }
 }

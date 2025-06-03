@@ -17,11 +17,20 @@
 package org.glavo.meow.value;
 
 import org.glavo.meow.MeowContext;
+import org.glavo.meow.MeowSymbolMap;
 import org.glavo.meow.ast.MeowExpression;
 
 import java.util.List;
 
-public sealed interface MeowValue permits MeowFunction, MeowList, MeowMacro, MeowText, MeowUnit {
+public interface MeowValue {
 
     MeowValue apply(MeowContext context, List<MeowExpression> args);
+
+    default String toDebugString(MeowContext context, MeowSymbolMap symbolMap) {
+        return toString();
+    }
+
+    default String toDisplayString(MeowContext context) {
+        return toString();
+    }
 }

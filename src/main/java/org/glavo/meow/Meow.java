@@ -25,6 +25,8 @@ import java.util.Objects;
 import java.util.Set;
 
 public final class Meow {
+    public static final boolean DEBUG = "true".equals(System.getProperty("meow.debug"));
+
     private static final Set<String> MEOW = Set.of("meow", "miaou", "miao", "nyan", "にゃん", "야옹", "喵");
 
     public static Meow of(XWPFRun term) {
@@ -43,12 +45,12 @@ public final class Meow {
         }
     }
 
-    public static Meow builtin(int color) {
+    public static Meow builtin(int color, STHighlightColor.Enum highlightColor) {
         return new Meow(
                 false,
                 UnderlinePatterns.NONE,
                 color,
-                STHighlightColor.LIGHT_GRAY,
+                highlightColor,
                 false,
                 null,
                 null

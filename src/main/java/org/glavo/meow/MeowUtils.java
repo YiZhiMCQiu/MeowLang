@@ -38,6 +38,11 @@ public final class MeowUtils {
         return end;
     }
 
+    public static void checkArgsCount(List<?> args, int expected) {
+        if (args.size() != expected) {
+            throw new IllegalArgumentException("Expected " + expected + " arguments, but got " + args.size() + ": " + args);
+        }
+    }
 
     public static void appendTrueRgbEscape(StringBuilder builder, boolean background, int color) {
         builder.append("\u001b[")
@@ -76,6 +81,57 @@ public final class MeowUtils {
             // TODO: Dark colors
             return null;
         }
+    }
+
+    public static String toDebugString(List<XWPFRun> runs) {
+        StringBuilder builder = new StringBuilder();
+        builder.append('"');
+
+        for (XWPFRun run : runs) {
+            String text = run.text();
+            for (int i = 0; i < text.length(); i++) {
+                char ch = text.charAt(i);
+
+                switch (ch) {
+                    case '\n':
+                        builder.append("\\n");
+                        break;
+                    case '\r':
+                        builder.append("\\r");
+                        break;
+                    case '\t':
+                        builder.append("\\t");
+                        break;
+                    case '\b':
+                        builder.append("\\b");
+                        break;
+                    case '\f':
+                        builder.append("\\f");
+                        break;
+                    case '"':
+                        builder.append("\\\"");
+                        break;
+                    case '\\':
+                        builder.append("\\\\");
+                        break;
+                    case ' ':
+                        builder.append(' ');
+                        break;
+                    default: {
+                        if (Character.isISOControl(ch) || Character.isWhitespace(ch) || !Character.isDefined(ch)) {
+                            builder.append("\\u%04x".formatted((int) ch));
+                        } else {
+                            builder.append(ch);
+                        }
+                    }
+                }
+
+            }
+
+        }
+
+        builder.append('"');
+        return builder.toString();
     }
 
     private MeowUtils() {

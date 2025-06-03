@@ -17,5 +17,5 @@
 package org.glavo.meow.value;
 
 @FunctionalInterface
-public non-sealed interface MeowMacro extends MeowValue  {
+public interface MeowMacro extends MeowValue {
 }

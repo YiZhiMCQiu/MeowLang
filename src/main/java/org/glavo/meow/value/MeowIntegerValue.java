@@ -14,25 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.glavo.meow.ast;
+package org.glavo.meow.value;
 
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.glavo.meow.MeowContext;
-import org.glavo.meow.MeowSymbolMap;
-import org.glavo.meow.MeowUtils;
-import org.glavo.meow.value.MeowText;
-import org.glavo.meow.value.MeowValue;
+import org.glavo.meow.ast.MeowExpression;
 
 import java.util.List;
 
-public record MeowRichText(List<XWPFRun> content) implements MeowExpression {
+public record MeowIntegerValue(long value) implements MeowValue {
     @Override
-    public MeowValue eval(MeowContext context) {
-        return new MeowText(content);
+    public MeowValue apply(MeowContext context, List<MeowExpression> args) {
+        return args.get((int) value).eval(context);
     }
 
     @Override
-    public String toDebugString(MeowSymbolMap symbolMap) {
-        return MeowUtils.toDebugString(content);
+    public String toDisplayString(MeowContext context) {
+        return Long.toString(value);
     }
 }

@@ -17,10 +17,12 @@
 package org.glavo.meow.ast;
 
 import org.glavo.meow.MeowContext;
+import org.glavo.meow.MeowSymbolMap;
 import org.glavo.meow.value.MeowUnit;
 import org.glavo.meow.value.MeowValue;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public record MeowExpressionList(List<MeowExpression> nodes) implements MeowExpression {
     @Override
@@ -30,5 +32,10 @@ public record MeowExpressionList(List<MeowExpression> nodes) implements MeowExpr
         }
 
         return nodes.getFirst().eval(context).apply(context, nodes.subList(1, nodes.size()));
+    }
+
+    @Override
+    public String toDebugString(MeowSymbolMap symbolMap) {
+        return symbolMap.toString(nodes);
     }
 }

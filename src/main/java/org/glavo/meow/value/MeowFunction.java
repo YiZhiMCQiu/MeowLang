@@ -22,7 +22,7 @@ import org.glavo.meow.ast.MeowExpression;
 import java.util.List;
 
 @FunctionalInterface
-public non-sealed interface MeowFunction extends MeowValue {
+public interface MeowFunction extends MeowValue {
     MeowValue applyValues(MeowContext context, List<MeowValue> args);
 
     @Override

@@ -25,6 +25,8 @@ import org.glavo.meow.ast.MeowExpression;
 import org.glavo.meow.ast.MeowIdentifier;
 import org.glavo.meow.ast.MeowExpressionList;
 import org.glavo.meow.value.MeowFunction;
+import org.glavo.meow.value.MeowIntegerValue;
+import org.glavo.meow.value.MeowLambda;
 import org.glavo.meow.value.MeowList;
 import org.glavo.meow.value.MeowText;
 import org.glavo.meow.value.MeowUnit;
@@ -40,21 +42,13 @@ import java.util.List;
 
 @SuppressWarnings("resource")
 public final class MeowBuiltinFunctions {
-    // Built-in functions
-
-    private static void checkArgsCount(List<?> args, int expected) {
-        if (args.size() != expected) {
-            throw new IllegalArgumentException("Expected " + expected + " arguments, but got " + args.size() + ": " + args);
-        }
-    }
-
 
     // Macros
 
     public static MeowValue let(MeowContext context, List<MeowExpression> args) {
-        context.debugLogBuiltinFunctionCall("let", context, args);
+        context.logMacroCall("let", args);
 
-        checkArgsCount(args, 2);
+        MeowUtils.checkArgsCount(args, 2);
 
 
         MeowExpression name = args.getFirst();
@@ -68,9 +62,11 @@ public final class MeowBuiltinFunctions {
     }
 
     public static MeowValue lambda(MeowContext context, List<MeowExpression> args) {
-        context.debugLogBuiltinFunctionCall("lambda", context, args);
+        context.logMacroCall("lambda", args);
 
-        checkArgsCount(args, 2);
+        if (args.size() < 1) {
+            throw new IllegalArgumentException("Expected at least 2 arguments, but got " + args.size() + ": " + args);
+        }
 
         List<Meow> parameters;
         if (args.getFirst() instanceof MeowIdentifier(Meow meow)) {
@@ -86,28 +82,31 @@ public final class MeowBuiltinFunctions {
             throw new IllegalArgumentException("Expected parameter list, but got " + args.getFirst());
         }
 
-        MeowExpression body = args.get(1);
+        return new MeowLambda(context, parameters, args.subList(1, args.size()));
+    }
 
-        return (MeowFunction) (ignored, lambdaArgs) -> {
-            checkArgsCount(lambdaArgs, parameters.size());
-
-            MeowContext nestContext = new MeowContext(context, context.getTerminal());
-            for (int i = 0; i < parameters.size(); i++) {
-                nestContext.setValue(parameters.get(i), lambdaArgs.get(i));
-            }
-
-            return body.eval(nestContext);
-        };
+    public static MeowValue integer(MeowContext context, List<MeowExpression> args) {
+        return new MeowIntegerValue(args.size());
     }
 
     // Functions
 
     public static MeowValue print(MeowContext context, List<MeowValue> args) {
-        context.debugLogBuiltinFunctionCall("print", context, args);
+        context.logFunctionCall("print", args);
+        if (args.isEmpty()) {
+            throw new IllegalArgumentException("Nothing to print");
+        }
 
         StringBuilder builder = new StringBuilder();
 
+        boolean first = true;
         for (MeowValue value : args) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append('\n');
+            }
+
             if (value instanceof MeowText(List<XWPFRun> content)) {
                 for (XWPFRun node : content) {
                     var text = AnsiString.ofPlain(node.text());
@@ -161,12 +160,26 @@ public final class MeowBuiltinFunctions {
                     }
                 }
             } else {
-                builder.append(value);
+                builder.append(value.toDisplayString(context));
             }
         }
 
         context.getTerminal().writer().println(builder);
         return MeowUnit.UNIT;
+    }
+
+    public static MeowValue readInt(MeowContext context, List<MeowValue> args) {
+        context.logFunctionCall("readInt", args);
+        String input;
+        if (args.isEmpty()) {
+            input = context.getReader().readLine();
+        } else if (args.size() == 1) {
+            input = context.getReader().readLine(args.getFirst().toDisplayString(context));
+        } else {
+            throw new IllegalArgumentException("Expected 0 or 1 argument, but got " + args.size() + ": " + args);
+        }
+
+        return new MeowIntegerValue(Long.parseLong(input));
     }
 
     public static MeowValue list(MeowContext context, List<MeowValue> args) {
