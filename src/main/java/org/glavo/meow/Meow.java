@@ -28,8 +28,8 @@ public final class Meow {
     public static final boolean DEBUG = "true".equals(System.getProperty("meow.debug"));
 
     private static final Set<String> MEOW = Set.of(
-            "meow", "miaou", "miao", "nyan",
-            "にゃん", "야옹", "喵", "喵呜",
+            "meow", "miaou", "miao", "nyan", "nya",
+            "にゃん", "にゃ", "야옹", "喵", "喵呜",
             "мяу", "miyav", "miau", "miauw", "μιάου", "mjau", "nyávog", "म्याऊं", "meong", "mjá", "meo meo",
             "mjäu", "mjav", "мјау", "mjal", "მიაუ", "myau", "ngiyavuma", "ማው", "maw"
     );
